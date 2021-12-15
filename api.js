@@ -1,23 +1,22 @@
 // Importing module
-var mysql = require('mysql');
 const cors = require('cors');
 const express = require('express');
 var bodyParser = require('body-parser');
 const app = express();
 
-var conn = mysql.createConnection({
-  host:"localhost",
-  user:"yuri",
-  password:"12345678",
-  database : "scraper"
+const { Client } = require('pg');
+var connectionString = "postgres://ooukloaj:8elvdmNLbJey2MaANlXY2-m6D4OPgZ3f@kesavan.db.elephantsql.com/ooukloaj";
+const client = new Client({
+    connectionString: connectionString
 });
+client.connect();
 
 function selectLines(search){
   return new Promise((resolve, reject) => {
     console.log("Database Connected");
     console.log("Search: ", search);
 
-    conn.query("SELECT * FROM linhas WHERE numero LIKE '%"+search+"%' OR locais LIKE '%"+search+"%';", function (err, result) {
+    client.query("SELECT * FROM linhas WHERE numero LIKE '%"+search+"%' OR locais LIKE '%"+search+"%';", function (err, result) {
       if (err) throw err;
       console.log(result);
       resolve(result);
@@ -32,7 +31,7 @@ app.use(bodyParser.json());
 app.get("/linhas/:search", function(req, res) {
   var search = req.params.search;
   selectLines(search).then((lines) => {
-    res.json(lines.map(item => ({"numero": item.numero, "locais": item.locais})));
+    res.json(lines.rows.map(item => ({"numero": item.numero, "locais": item.locais})));
   });
 });
 

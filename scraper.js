@@ -1,7 +1,7 @@
 const axios = require('axios');
 const cheerio = require('cheerio');
 const url = 'https://moovitapp.com/index/pt-br/transporte_p%C3%BAblico-lines-Fortaleza-983-9809';
-var mysql = require('mysql');
+const { Client } = require('pg');
 
 function getLines(){
   return new Promise((resolve, reject) =>{
@@ -21,26 +21,22 @@ function getLines(){
 }
 
 function insertLines(lines){
-  var conn = mysql.createConnection({
-    host: "localhost",
-    user: "yuri",
-    password: "12345678",
-    database: "scraper"
+  var connectionString = "postgres://ooukloaj:8elvdmNLbJey2MaANlXY2-m6D4OPgZ3f@kesavan.db.elephantsql.com/ooukloaj";
+  const client = new Client({
+      connectionString: connectionString
   });
+  client.connect();
+  console.log("Database Connected!");
+  console.log("Inserting Data");
 
-  conn.connect(function(err) {
-    if (err) throw err;
-    console.log("Database Connected!");
-
-    lines.forEach(line => {
-      let number = line.slice(0, 3);
-      let places = line.slice(4);
-      var sql = "INSERT INTO linhas (numero, locais) VALUES ('"+number+"', '"+places+"')";
-      conn.query(sql, function (err, result) {
-        if (err) throw err;
-        console.log("1 record inserted.");
-        console.log(result);
-      });
+  lines.forEach(line => {
+    let number = line.slice(0, 3);
+    let places = line.slice(4);
+    var sql = "INSERT INTO linhas (numero, locais) VALUES ('"+number+"', '"+places+"')";
+    client.query(sql, function (err, result) {
+      if (err) throw err;
+      console.log("line inserted.");
+      console.log(result);
     });
   });
 }
@@ -48,9 +44,3 @@ function insertLines(lines){
 getLines().then((lines) => {
   insertLines(lines);
 });
-
-// USE scraper;
-// CREATE TABLE IF NOT EXISTS linhas 
-// (id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, 
-// numero VARCHAR(3) NOT NULL, 
-// locais VARCHAR(100) NOT NULL);
