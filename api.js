@@ -35,6 +35,11 @@ app.get("/linhas/:search", function(req, res) {
   });
 });
 
-app.listen(9001, '0.0.0.0', function() {
-  console.log('Listening on port 9001');
+// app.listen(9001, '0.0.0.0', function() {
+//   console.log('Listening on port 9001');
+// });
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+    console.log(`Our app is running on port ${ PORT }`);
 });
