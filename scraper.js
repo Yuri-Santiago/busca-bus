@@ -21,7 +21,7 @@ function getLines(){
 }
 
 function insertLines(lines){
-  var connectionString = "postgres://ooukloaj:8elvdmNLbJey2MaANlXY2-m6D4OPgZ3f@kesavan.db.elephantsql.com/ooukloaj";
+  var connectionString = "";
   const client = new Client({
       connectionString: connectionString
   });
