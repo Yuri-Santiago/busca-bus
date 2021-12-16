@@ -5,7 +5,7 @@ var bodyParser = require('body-parser');
 const app = express();
 
 const { Client } = require('pg');
-var connectionString = "postgres://ooukloaj:8elvdmNLbJey2MaANlXY2-m6D4OPgZ3f@kesavan.db.elephantsql.com/ooukloaj";
+var connectionString = "";
 const client = new Client({
     connectionString: connectionString
 });
@@ -34,10 +34,6 @@ app.get("/linhas/:search", function(req, res) {
     res.json(lines.rows.map(item => ({"numero": item.numero, "locais": item.locais})));
   });
 });
-
-// app.listen(9001, '0.0.0.0', function() {
-//   console.log('Listening on port 9001');
-// });
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
